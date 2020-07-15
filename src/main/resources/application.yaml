@@ -1,0 +1,12 @@
+spring:
+  mustache:
+    suffix: .html
+#    cache: false
+#  devtools:
+#    livereload:
+#      enabled: true
+
+app:
+  youtube-api:
+    app-key: AIzaSyB0NZMRO2Ncj8JfBpndCDqpPk5CDM4ULB4
+    comment-api: https://www.googleapis.com/youtube/v3/commentThreads

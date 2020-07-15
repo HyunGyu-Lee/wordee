@@ -1,0 +1,51 @@
+<!-- Header -->
+{{>layout/header}}
+
+<!--<div class="row">-->
+<!--	<div class="col-12">-->
+<!--		<h1>댓글 분석</h1>-->
+<!--	</div>-->
+<!--</div>-->
+<div class="row justify-content-center" style="padding-top: 50px;">
+	<div class="col-6">
+		<h4># 분석 정보</h4>
+	</div>
+</div>
+<div class="row justify-content-center">
+	<div class="col-6 input-group mb-3">
+		<input id="videoUrl" type="text" class="form-control" placeholder="Youtube video url"
+			   aria-label="Youtube video url" aria-describedby="button-addon2">
+		<div class="input-group-append">
+			<button id="analysisButton" class="btn btn-outline-secondary" type="button" id="button-addon2">분석
+			</button>
+		</div>
+	</div>
+</div>
+<div class="row justify-content-center" style="padding-top: 50px;">
+	<div class="col-6">
+		<h4># 분석 결과</h4>
+	</div>
+</div>
+<div class="row justify-content-center">
+	<div class="col-6">
+		<table id="resultTable" class="table">
+			<thead>
+				<tr>
+					<th class="text-center" scope="col">단어</th>
+					<th  class="text-center" scope="col">빈도</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="text-center" colspan="2">조회해주세요</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!-- https://www.youtube.com/watch?v=7QhY4BX0CAQ -->
+<!-- https://youtu.be/7QhY4BX0CAQ -->
+
+<!-- Footer -->
+{{>layout/footer}}
