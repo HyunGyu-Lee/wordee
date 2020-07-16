@@ -1,6 +1,7 @@
 package com.hst.wordee.analysis.ui;
 
 import com.hst.wordee.analysis.service.AnalysisService;
+import com.hst.wordee.youtubeapis.model.search.VideoDetail;
 import com.hst.wordee.youtubeapis.service.YoutubeApiService;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,11 @@ public class AnalysisController {
 	public ResponseEntity<Map<String, Long>> analysisVideoComments(@PathVariable String videoId) {
 		return ResponseEntity.ok(youtubeApiService.getAllCommentThreads(videoId));
 	}
+
+	@GetMapping("youtube-search/{videoId}")
+	public ResponseEntity<VideoDetail> getVideoTest(@PathVariable String videoId) {
+		return ResponseEntity.ok(youtubeApiService.getVideoDetail(videoId));
+	}
+
 
 }

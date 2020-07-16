@@ -2,9 +2,10 @@ package com.hst.wordee.youtubeapis.service;
 
 import com.hst.wordee.analysis.service.AnalysisService;
 import com.hst.wordee.youtubeapis.exception.YoutubeApiException;
-import com.hst.wordee.youtubeapis.model.Comment;
-import com.hst.wordee.youtubeapis.model.CommentThreadsResponse;
-import com.hst.wordee.youtubeapis.model.TopLevelComment;
+import com.hst.wordee.youtubeapis.model.comments.Comment;
+import com.hst.wordee.youtubeapis.model.comments.CommentThreadsResponse;
+import com.hst.wordee.youtubeapis.model.comments.TopLevelComment;
+import com.hst.wordee.youtubeapis.model.search.VideoDetail;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,6 +36,9 @@ public class YoutubeApiService {
 	@Value("${app.youtube-api.comment-api}")
 	private String commentApiUrl;
 
+	@Value("${app.youtube-api.search-api}")
+	private String searchApiUrl;
+
 	@Value("${app.youtube-api.app-key}")
 	private String appKey;
 
@@ -45,6 +48,23 @@ public class YoutubeApiService {
 	public YoutubeApiService(RestTemplate restTemplate, AnalysisService analysisService) {
 		this.restTemplate = restTemplate;
 		this.analysisService = analysisService;
+	}
+
+	public VideoDetail getVideoDetail(String videoId) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(searchApiUrl)
+				.queryParam("textFormat", "plainText")
+				.queryParam("part", "snippet")
+				.queryParam("key", appKey)
+				.queryParam("id", videoId);
+
+		ResponseEntity<VideoDetail> response = restTemplate.exchange(builder.build().toUriString(), HttpMethod.GET,
+				null, VideoDetail.class);
+
+		if (response.getStatusCode() != HttpStatus.OK) {
+			throw new YoutubeApiException("영상 조회 실패. " + response.getStatusCode().getReasonPhrase());
+		}
+
+		return response.getBody();
 	}
 
 	/**

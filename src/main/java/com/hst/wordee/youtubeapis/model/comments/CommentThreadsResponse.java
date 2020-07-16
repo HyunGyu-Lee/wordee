@@ -1,5 +1,7 @@
-package com.hst.wordee.youtubeapis.model;
+package com.hst.wordee.youtubeapis.model.comments;
 
+import com.hst.wordee.youtubeapis.model.ModelBase;
+import com.hst.wordee.youtubeapis.model.PageInfo;
 import lombok.Data;
 
 import java.util.List;

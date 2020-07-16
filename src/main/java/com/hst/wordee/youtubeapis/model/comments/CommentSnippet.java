@@ -1,4 +1,4 @@
-package com.hst.wordee.youtubeapis.model;
+package com.hst.wordee.youtubeapis.model.comments;
 
 import lombok.Data;
 

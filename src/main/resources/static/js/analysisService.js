@@ -8,7 +8,10 @@
 	}
 }(this, function () {
 	return {
-		youtubeCommentAnalysis(videoId) {
+		getYoutubeVideoInfo(videoId) {
+			return axios.get(`/api/analysis/youtube-search/${videoId}`)
+		},
+		analysisYoutubeComment(videoId) {
 			return axios.get(`/api/analysis/youtube-comment-analysis/${videoId}`)
 		}
 	};
