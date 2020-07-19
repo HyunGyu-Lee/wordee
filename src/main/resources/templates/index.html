@@ -1,16 +1,10 @@
 <!-- Header -->
 {{>layout/header}}
 
-<!-- 분석 정보 Header -->
-<div class="row justify-content-center" style="padding-top: 50px;">
-	<div class="col-8">
-		<h4># 분석 정보</h4>
-	</div>
-</div>
 <!-- 분석 정보 입력 Form -->
-<div class="row justify-content-center">
-	<div class="col-8 input-group mb-3">
-		<input id="videoUrl" type="text" class="form-control" placeholder="Youtube video url"
+<div class="row justify-content-center" style="margin-top: 20px;">
+	<div class="col-6 input-group mb-3">
+		<input id="videoUrl" type="text" class="form-control" placeholder="e.g. https://www.youtube.com/watch?v=zCamAKs5D3U"
 			   aria-label="Youtube video url" aria-describedby="button-addon2">
 		<div class="input-group-append">
 			<button id="analysisButton" class="btn btn-outline-secondary" type="button" id="button-addon2">분석
@@ -18,32 +12,32 @@
 		</div>
 	</div>
 </div>
+
+<!-- 분석 정보 Header -->
+<div class="row justify-content-center" style="padding-top: 50px;">
+	<div class="col-6">
+		<h4># 분석 정보</h4>
+	</div>
+</div>
+
 <!-- 분석 영상 Info -->
 <div class="row justify-content-center" style="padding-top: 20px;">
-	<div class="col-8">
+	<div class="col-6">
 		<div id="video-info" class="card"></div>
 	</div>
 </div>
+
+<!-- 분석 결과 Header -->
 <div class="row justify-content-center" style="padding-top: 50px;">
-	<div class="col-8">
+	<div class="col-6">
 		<h4># 분석 결과</h4>
 	</div>
 </div>
+
+<!-- 분석 결과 -->
 <div class="row justify-content-center">
-	<div class="col-8">
-		<table id="resultTable" class="table">
-			<thead>
-				<tr>
-					<th class="text-center" scope="col">단어</th>
-					<th  class="text-center" scope="col">빈도</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td class="text-center" colspan="2">조회해주세요</td>
-				</tr>
-			</tbody>
-		</table>
+	<div class="col-6">
+		<div id="wordCloud" style="width: 100%; height: 600px;"></div>
 	</div>
 </div>
 

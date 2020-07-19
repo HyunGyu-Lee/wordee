@@ -1,7 +1,6 @@
 $(document).ready(() => {
 	// 분석 버튼 클릭
 	$('#analysisButton').on('click', async () => {
-		console.log('https://www.youtube.com/watch?v=zCamAKs5D3U')
 		const videoId = getVideoId($('#videoUrl').val());
 
 		settingVideoDetail(videoId);
@@ -55,11 +54,43 @@ async function processAnalyze(videoId) {
 
 	const response = await analysisService.analysisYoutubeComment(videoId);
 	const nounMap = response.data;
-	const nounList = Object.keys(nounMap).map(key => ({key: key, count: nounMap[key]}));
+	const nounList = Object.keys(nounMap).map(key => {
+		return {key: key, count: nounMap[key]}
+	});
 
-	nounList
-		.filter(e => e.count > 1)
-		.forEach(data => {
-				$resultTable.append(`<tr><td class="text-center">${data.key}</td><td class="text-center">${data.count}</td></tr>`);
-		})
+	drawWordCloudChart(nounList);
+}
+
+function createData(nounMap, key) {
+
+}
+
+function drawWordCloudChart(data) {
+	console.log(data)
+
+	var chart = am4core.create("wordCloud", am4plugins_wordCloud.WordCloud);
+	chart.fontFamily = "Courier New";
+	var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
+	series.randomness = 0.1;
+	series.rotationThreshold = 0.5;
+
+	series.data = data.sort((a, b) => b.count - a.count).slice(0, 300);
+
+	series.dataFields.word = "key";
+	series.dataFields.value = "count";
+
+	series.heatRules.push({
+		"target": series.labels.template,
+		"property": "fill",
+		"min": am4core.color("#0000CC"),
+		"max": am4core.color("#CC00CC"),
+		"dataField": "value"
+	});
+
+	series.labels.template.url = "https://stackoverflow.com/questions/tagged/{word}";
+	series.labels.template.urlTarget = "_blank";
+	series.labels.template.tooltipText = "{word}: {value}";
+
+	var hoverState = series.labels.template.states.create("hover");
+	hoverState.properties.fill = am4core.color("#FF0000");
 }
