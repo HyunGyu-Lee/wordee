@@ -1,5 +1,7 @@
 package com.hst.wordee.analysis.ui;
 
+import com.hst.wordee.analysis.model.AnalysisResponse;
+import com.hst.wordee.analysis.model.WordCount;
 import com.hst.wordee.analysis.service.AnalysisService;
 import com.hst.wordee.youtubeapis.model.search.VideoDetail;
 import com.hst.wordee.youtubeapis.service.YoutubeApiService;
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,8 +30,9 @@ public class AnalysisController {
 	}
 
 	@GetMapping("youtube-comment-analysis/{videoId}")
-	public ResponseEntity<Map<String, Long>> analysisVideoComments(@PathVariable String videoId) {
-		return ResponseEntity.ok(youtubeApiService.getAllCommentThreads(videoId));
+	public ResponseEntity<AnalysisResponse> analysisVideoComments(@PathVariable String videoId,
+																  @RequestParam int maxCommentCount) {
+		return ResponseEntity.ok(youtubeApiService.analysisYoutubeComments(videoId, maxCommentCount));
 	}
 
 	@GetMapping("youtube-search/{videoId}")

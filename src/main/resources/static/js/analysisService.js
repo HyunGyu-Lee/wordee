@@ -9,10 +9,15 @@
 }(this, function () {
 	return {
 		getYoutubeVideoInfo(videoId) {
-			return axios.get(`/api/analysis/youtube-search/${videoId}`)
+			return axios.get(`/api/analysis/youtube-search/${videoId}`);
 		},
-		analysisYoutubeComment(videoId) {
-			return axios.get(`/api/analysis/youtube-comment-analysis/${videoId}`)
+		analysisYoutubeComment(videoId, maxCommentCount) {
+			const param = {
+				params: {
+					maxCommentCount: maxCommentCount
+				}
+			}
+			return axios.get(`/api/analysis/youtube-comment-analysis/${videoId}`, param);
 		}
 	};
 }));

@@ -1,5 +1,7 @@
 package com.hst.wordee.youtubeapis.service;
 
+import com.hst.wordee.analysis.model.AnalysisResponse;
+import com.hst.wordee.analysis.model.WordCount;
 import com.hst.wordee.analysis.service.AnalysisService;
 import com.hst.wordee.youtubeapis.exception.YoutubeApiException;
 import com.hst.wordee.youtubeapis.model.comments.Comment;
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -29,7 +33,8 @@ import java.util.stream.Collectors;
 @Service
 public class YoutubeApiService {
 
-	private static final int PAGE_SIZE = 100;
+	private static final int DEFAULT_FETCH_SIZE = 100;
+	private static final int DEFAULT_MAX_COMMENT_SIZE = 1000;
 
 	private static final Logger logger = LoggerFactory.getLogger(YoutubeApiService.class);
 
@@ -50,6 +55,11 @@ public class YoutubeApiService {
 		this.analysisService = analysisService;
 	}
 
+	/**
+	 * 유튜브 기본 정보 조회
+	 * @param videoId 비디오 ID
+	 * @return 유튜브 기본 정보
+	 */
 	public VideoDetail getVideoDetail(String videoId) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(searchApiUrl)
 				.queryParam("textFormat", "plainText")
@@ -68,28 +78,53 @@ public class YoutubeApiService {
 	}
 
 	/**
-	 * {videoId}의 모든 댓글 스레드 조회
+	 * {videoId}의 영상 댓글 분석
 	 * @param videoId 비디오 ID
+	 * @param maxCommentCount 분석 댓글 수
 	 * @return 댓글 스레드
 	 */
-	public Map<String, Long> getAllCommentThreads(String videoId) {
-		Map<String, Long> nounMap = new HashMap<>();
+	public AnalysisResponse analysisYoutubeComments(String videoId, int maxCommentCount) {
+		Map<String, Long> wordCountMap = new HashMap<>();
 		String nextPageToken = null;
+		int processCommentCount = 0;
+		maxCommentCount = maxCommentCount > 0 ? maxCommentCount : DEFAULT_MAX_COMMENT_SIZE;
 
-		do {
-			CommentThreadsResponse commentThreads = getCommentThreads(videoId, 50, nextPageToken);
+		while (processCommentCount == 0 || nextPageToken != null) {
+			CommentThreadsResponse commentThreads = getCommentThreads(videoId, DEFAULT_FETCH_SIZE, nextPageToken);
 			for (Comment comment : commentThreads.getItems()) {
 				TopLevelComment.Contents contents = comment.getSnippet().getTopLevelComment().getSnippet();
-				try {
-					KomoranResult result = analysisService.analyze(contents.getTextDisplay());
-					nounMap.putAll(result.getNouns().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting())));
-				} catch (Exception e) {
-					logger.warn("분석불가: {}, errorMessage: {}", contents.getTextDisplay(), e.getMessage());
+				wordCountMap.putAll(extractWordCount(contents.getTextDisplay()));
+				processCommentCount++;
+
+				if (processCommentCount >= maxCommentCount) {
+					logger.info("{} 영상 댓글 {}개 분석 완료..", videoId, processCommentCount);
+					return AnalysisResponse.of(processCommentCount, convertWordCountMapToList(wordCountMap));
 				}
 			}
+			logger.info("{} 영상 댓글 {}개 분석 완료..", videoId, processCommentCount);
 			nextPageToken = commentThreads.getNextPageToken();
-		} while (nextPageToken != null);
-		return nounMap;
+		}
+		return AnalysisResponse.of(processCommentCount, convertWordCountMapToList(wordCountMap));
+	}
+
+	// WordCountMap -> List 변환
+	private List<WordCount> convertWordCountMapToList(Map<String, Long> wordCountMap) {
+		return wordCountMap.entrySet().stream()
+				.map(e -> WordCount.of(e.getKey(), e.getValue()))
+				.sorted((a, b) -> (int) (b.getCount() - a.getCount()))
+				.collect(Collectors.toList());
+	}
+
+	// 분석 서비스 call + 명사 단어 갯수 추출
+	private Map<String, Long> extractWordCount(String sentence) {
+		try {
+			KomoranResult result = analysisService.analyze(sentence);
+			return result.getNouns().stream()
+					.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+		} catch (Exception e) {
+			logger.warn("분석불가: {}, errorMessage: {}", sentence, e.getMessage());
+			return Collections.emptyMap();
+		}
 	}
 
 	/***
