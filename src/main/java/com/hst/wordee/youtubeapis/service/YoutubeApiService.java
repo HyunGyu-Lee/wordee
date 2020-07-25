@@ -98,12 +98,16 @@ public class YoutubeApiService {
 
 				if (processCommentCount >= maxCommentCount) {
 					logger.info("{} 영상 댓글 {}개 분석 완료..", videoId, processCommentCount);
+					logger.info("분석 종료: {} / {}", nextPageToken, processCommentCount);
 					return AnalysisResponse.of(processCommentCount, convertWordCountMapToList(wordCountMap));
 				}
 			}
 			logger.info("{} 영상 댓글 {}개 분석 완료..", videoId, processCommentCount);
 			nextPageToken = commentThreads.getNextPageToken();
 		}
+
+		logger.info("분석 종료: {} / {}", nextPageToken, processCommentCount);
+
 		return AnalysisResponse.of(processCommentCount, convertWordCountMapToList(wordCountMap));
 	}
 

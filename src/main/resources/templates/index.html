@@ -3,13 +3,31 @@
 
 <!-- 분석 정보 입력 Form -->
 <div class="row justify-content-center" style="margin-top: 20px;">
-	<div class="col-6 input-group mb-3">
-		<input id="videoUrl" type="text" class="form-control" placeholder="e.g. https://www.youtube.com/watch?v=zCamAKs5D3U"
-			   aria-label="Youtube video url" aria-describedby="button-addon2">
-		<div class="input-group-append">
-			<button id="analysisButton" class="btn btn-outline-secondary" type="button" id="button-addon2">분석
-			</button>
-		</div>
+	<div class="col-6">
+		<form class="form">
+			<div class="form-group mb-3">
+				<label for="videoUrl">비디오 URL</label>
+				<div class="input-group">
+					<input id="videoUrl"
+						   type="text"
+						   class="form-control"
+						   placeholder="e.g. https://www.youtube.com/watch?v=zCamAKs5D3U"
+						   aria-label="Youtube video url"
+						   aria-describedby="button-addon2"
+						   value="https://www.youtube.com/watch?v=2LKsUSQbWJ8"
+					/>
+					<div class="input-group-append">
+						<button id="analysisButton" class="btn btn-outline-secondary" type="button" id="button-addon2">분석
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="maxCommentCount">댓글 분석량 <span id="maxCommentCountView">1000</span></label>
+				<input id="maxCommentCount" type="range" value="1000" class="form-control-range" min="0" max="2000"
+					   step="50">
+			</div>
+		</form>
 	</div>
 </div>
 
@@ -31,6 +49,14 @@
 <div class="row justify-content-center" style="padding-top: 50px;">
 	<div class="col-6">
 		<h4># 분석 결과</h4>
+	</div>
+</div>
+<div class="row justify-content-center" style="padding-top: 20px; display: none">
+	<div class="col-6">
+		<div class="form-group">
+			<label for="maxWordCount">단어 수 <span id="maxWordCountView">500</span></label>
+			<input id="maxWordCount" type="range" value="1000" class="form-control-range" min="0" max="2000" step="50">
+		</div>
 	</div>
 </div>
 

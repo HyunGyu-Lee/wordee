@@ -1,33 +1,44 @@
-const store = {
-	data: {
-		maxCommentCount: 100,
-		analysisData: [],
+const Namespaces = {
+	DATA: {
+		ANALYSIS_DATA: 'analysisData',
 	},
-	component: {
-		wordCloudChart: null,
-		wordCloudSeries: null
+	UI: {
+		CHART: 'chart',
+		SERIES: 'series'
 	}
 }
 
-
 $(document).ready(() => {
+	Store.put(Namespaces.DATA.ANALYSIS_DATA, []);
+
+	initializeWordCloudChart();
+
 	// 분석 버튼 클릭
 	$('#analysisButton').on('click', async () => {
-		const videoId = getVideoId($('#videoUrl').val());
+		const videoId = parseVideoId($('#videoUrl').val());
+		const $maxWordCountInput = $('#maxWordCount');
+		const $maxCommentCountInput = $('#maxCommentCount');
 
 		settingVideoDetail(videoId);
 
-		processAnalyze(videoId, store.data.maxCommentCount);
+		processAnalyze(videoId, parseInt($maxCommentCountInput.val()), parseInt($maxWordCountInput.val()));
+
+		$maxWordCountInput.parent().parent().parent().show();
 	});
+
+	$('#maxWordCount').on('change', function () {
+		const maxWordCount = $(this).val();
+		drawAnalysisResult(Store.get(Namespaces.DATA.ANALYSIS_DATA), parseInt(maxWordCount));
+		$('#maxWordCountView').text(maxWordCount);
+	})
+
+	$('#maxCommentCount').on('input', function () {
+		const maxCommentCount = $(this).val();
+		$('#maxCommentCountView').text(maxCommentCount);
+	})
 })
 
-function clearResultArea() {
-	const $resultTable = $('#resultTable');
-	$resultTable.find('tbody').empty();
-	return $resultTable;
-}
-
-function getVideoId(url) {
+function parseVideoId(url) {
 	const urlToken = url.split('/');
 	const uri = urlToken[urlToken.length - 1];
 	if (uri.startsWith('watch')) {
@@ -54,40 +65,36 @@ async function settingVideoDetail(videoId) {
 
 	var $videoInfoAreaBody = $('<div class="card-body">');
 	$videoInfoAreaBody.append(`<p class="card-text">${videoDetail.title}</p>`);
-	videoDetail.tags.forEach(tag => {
-		$videoInfoAreaBody.append(`<span class="badge badge-primary">${tag}</span> `);
-	})
+	if (videoDetail.tags) {
+		videoDetail.tags.forEach(tag => {
+			$videoInfoAreaBody.append(`<span class="badge badge-primary">${tag}</span> `);
+		})
+	}
 	$videoInfoArea.append($videoInfoAreaBody);
 	$videoInfoArea.parent().parent().show();
 }
 
-async function processAnalyze(videoId, maxCommentCount) {
+async function processAnalyze(videoId, maxCommentCount, maxWordCount) {
 	const response = await analysisService.analysisYoutubeComment(videoId, maxCommentCount);
 	const analysisData = response.data;
-	console.log(analysisData)
-	drawWordCloudChart(analysisData.wordCounts);
+
+	Store.put(Namespaces.DATA.ANALYSIS_DATA, analysisData);
+
+	drawAnalysisResult(Store.get(Namespaces.DATA.ANALYSIS_DATA), maxWordCount);
 }
 
-function drawWordCloudChart(data) {
+function drawAnalysisResult(data, maxWordCount) {
+	const seriesInstance = Store.get(Namespaces.UI.SERIES);
+	seriesInstance.data = data.wordCounts.slice(0, maxWordCount);
+}
+
+function initializeWordCloudChart() {
 	const wordCloudChart = am4core.create("wordCloud", am4plugins_wordCloud.WordCloud);
 	wordCloudChart.fontFamily = "Courier New";
 	const series = wordCloudChart.series.push(new am4plugins_wordCloud.WordCloudSeries());
-
-	store.component.wordCloudChart = wordCloudChart;
-	store.component.wordCloudSeries = series;
-
-	series.data = data;
 	series.dataFields.word = "word";
 	series.dataFields.value = "count";
 
-	initializeSeriesUI(series);
-}
-
-function setComponent(name, instance) {
-	store.component[name] = instance
-}
-
-function initializeSeriesUI(series) {
 	series.randomness = 0.1;
 	series.rotationThreshold = 0.5;
 
@@ -105,4 +112,7 @@ function initializeSeriesUI(series) {
 
 	var hoverState = series.labels.template.states.create("hover");
 	hoverState.properties.fill = am4core.color("#FF0000");
+
+	Store.put(Namespaces.UI.CHART, wordCloudChart);
+	Store.put(Namespaces.UI.SERIES, series);
 }

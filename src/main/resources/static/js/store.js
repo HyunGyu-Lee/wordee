@@ -4,23 +4,16 @@
 	} else if (typeof module === 'object' && module.exports) {
 		module.exports = factory();
 	} else {
-		root['store'] = factory();
+		root['Store'] = factory();
 	}
 }(this, function () {
+	const object = {};
 	return {
-		data: {},
-		component: {},
-		setData: (name, value) => {
-			this.data[name] = value;
+		put: (name, value) => {
+			object[name] = value;
 		},
-		setComponent: (name, component) => {
-			this.component[name] = component;
-		},
-		getData: (name) => {
-			return this.data[name];
-		},
-		getComponent: (name) => {
-			return this.component[name];
+		get: (name) => {
+			return object[name];
 		}
 	};
 }));
