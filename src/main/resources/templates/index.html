@@ -32,44 +32,45 @@
 </div>
 
 <!-- 분석 정보 Header -->
-<div class="row justify-content-center" style="padding-top: 50px;">
-	<div class="col-6">
-		<h4># 분석 정보</h4>
+<div id="analysisSummaryArea" style="display: none;">
+	<div class="row justify-content-center" style="padding-top: 50px;">
+		<div class="col-6">
+			<h4># 분석 정보</h4>
+		</div>
 	</div>
-</div>
 
-<!-- 분석 영상 Info -->
-<div class="row justify-content-center" style="padding-top: 20px;">
-	<div class="col-6">
-		<div id="video-info" class="card"></div>
-	</div>
-</div>
-
-<!-- 분석 결과 Header -->
-<div class="row justify-content-center" style="padding-top: 50px;">
-	<div class="col-6">
-		<h4># 분석 결과</h4>
-	</div>
-</div>
-<div class="row justify-content-center" style="padding-top: 20px; display: none">
-	<div class="col-6">
-		<div class="form-group">
-			<label for="maxWordCount">단어 수 <span id="maxWordCountView">500</span></label>
-			<input id="maxWordCount" type="range" value="1000" class="form-control-range" min="0" max="2000" step="50">
+	<!-- 분석 영상 Info -->
+	<div class="row justify-content-center" style="padding-top: 20px;">
+		<div class="col-6">
+			<div id="video-info" class="card"></div>
 		</div>
 	</div>
 </div>
 
-<!-- 분석 결과 -->
-<div class="row justify-content-center">
-	<!-- WordCloud Chart -->
-	<div class="col-6">
-		<div id="wordCloud" style="width: 100%; height: 600px;"></div>
+<!-- 분석 결과 Header -->
+<div id="analysisResultArea" style="display: none;">
+	<div class="row justify-content-center" style="padding-top: 50px;">
+		<div class="col-6">
+			<h4># 분석 결과</h4>
+		</div>
+	</div>
+	<div class="row justify-content-center" style="padding-top: 20px;">
+		<div class="col-6">
+			<div class="form-group">
+				<label for="maxWordCount">단어 수 <span id="maxWordCountView">500</span></label>
+				<input id="maxWordCount" type="range" value="1000" class="form-control-range" min="0" max="2000" step="50">
+			</div>
+		</div>
+	</div>
+
+	<!-- 분석 결과 -->
+	<div class="row justify-content-center">
+		<!-- WordCloud Chart -->
+		<div class="col-6">
+			<div id="wordCloud" style="width: 100%; height: 600px;"></div>
+		</div>
 	</div>
 </div>
-
-<!-- https://www.youtube.com/watch?v=7QhY4BX0CAQ -->
-<!-- https://youtu.be/7QhY4BX0CAQ -->
 
 <!-- Footer -->
 {{>layout/footer}}

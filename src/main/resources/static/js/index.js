@@ -71,7 +71,9 @@ async function settingVideoDetail(videoId) {
 		})
 	}
 	$videoInfoArea.append($videoInfoAreaBody);
-	$videoInfoArea.parent().parent().show();
+
+	$('#analysisSummaryArea').show();
+	scrollBottom();
 }
 
 async function processAnalyze(videoId, maxCommentCount, maxWordCount) {
@@ -81,6 +83,9 @@ async function processAnalyze(videoId, maxCommentCount, maxWordCount) {
 	Store.put(Namespaces.DATA.ANALYSIS_DATA, analysisData);
 
 	drawAnalysisResult(Store.get(Namespaces.DATA.ANALYSIS_DATA), maxWordCount);
+
+	$('#analysisResultArea').show();
+	scrollBottom();
 }
 
 function drawAnalysisResult(data, maxWordCount) {
@@ -115,4 +120,11 @@ function initializeWordCloudChart() {
 
 	Store.put(Namespaces.UI.CHART, wordCloudChart);
 	Store.put(Namespaces.UI.SERIES, series);
+}
+
+function scrollBottom() {
+	// setTimeout(function () {
+	// 	$("html, body").animate({ scrollTop: $(document).height() }, 2000);
+	// }, 100);
+	$("html, body").animate({ scrollTop: $(document).height() }, 2000);
 }
