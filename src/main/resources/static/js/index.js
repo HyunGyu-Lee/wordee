@@ -15,6 +15,11 @@ $(document).ready(() => {
 
 	// 분석 버튼 클릭
 	$('#analysisButton').on('click', async () => {
+		$('#analysisInputArea').hide();
+		$('#analysisSummaryArea').hide();
+		$('#analysisResultArea').hide();
+		$('#loadingArea').show();
+
 		const videoId = parseVideoId($('#videoUrl').val());
 		const $maxWordCountInput = $('#maxWordCount');
 		const $maxCommentCountInput = $('#maxCommentCount');
@@ -71,9 +76,6 @@ async function settingVideoDetail(videoId) {
 		})
 	}
 	$videoInfoArea.append($videoInfoAreaBody);
-
-	$('#analysisSummaryArea').show();
-	scrollBottom();
 }
 
 async function processAnalyze(videoId, maxCommentCount, maxWordCount) {
@@ -84,7 +86,10 @@ async function processAnalyze(videoId, maxCommentCount, maxWordCount) {
 
 	drawAnalysisResult(Store.get(Namespaces.DATA.ANALYSIS_DATA), maxWordCount);
 
+	$('#analysisInputArea').show();
+	$('#analysisSummaryArea').show();
 	$('#analysisResultArea').show();
+	$('#loadingArea').hide();
 	scrollBottom();
 }
 
