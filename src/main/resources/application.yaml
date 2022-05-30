@@ -8,6 +8,6 @@ spring:
 
 app:
   youtube-api:
-    app-key: AIzaSyB0NZMRO2Ncj8JfBpndCDqpPk5CDM4ULB4
+    app-key: AIzaSyB7a2QY3rC6LfufdC26l4m-UO3PisE970Q
     search-api: https://www.googleapis.com/youtube/v3/videos
     comment-api: https://www.googleapis.com/youtube/v3/commentThreads
